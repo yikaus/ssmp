@@ -9,13 +9,16 @@ def ssm():
     pass
 
 @ssm.command()
-def ls():
-    click.echo('ls ssm parameter')
-    aws.get_ssms()
+@click.argument('path')
+def ls(path):
+    aws.get_ssms(path)
 
 @ssm.command()
-def cd():
-    click.echo('go into path')
+@click.option('-r','--recursive',is_flag=True)
+@click.argument('key')
+@click.argument('path')
+def grep(path,key,recursive):
+    aws.search_ssms(path,key,recursive)
 
 
 if __name__ == '__main__':

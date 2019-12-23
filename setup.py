@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 
-with open('README.rst') as f:
+with open('README.md') as f:
     readme = f.read()
 
 with open('LICENSE') as f:
@@ -9,11 +9,12 @@ with open('LICENSE') as f:
 
 setup(
     name='ssmp',
-    version='0.0.1',
-    description='CLI tool on AWS SSM parameter',
+    version='0.0.2',
+    description='CLI tool for AWS SSM parameter',
+    long_description_content_type='text/markdown',
     long_description=readme,
     author='Kevin Yi',
-    author_email='yikaus at gmail.com',
+    author_email='yikaus@gmail.com',
     url='https://github.com/yikaus/ssmp',
     scripts=['ssmp/main.py'],
     license=license,
@@ -21,6 +22,7 @@ setup(
     install_requires=[
         'click',
         'boto3',
+        'pandas',
     ],
     entry_points = {
         'console_scripts': [
