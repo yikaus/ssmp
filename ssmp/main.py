@@ -15,10 +15,11 @@ def ls(path):
 
 @ssm.command()
 @click.option('-r','--recursive',is_flag=True)
+@click.option('-v','--value',is_flag=True)
 @click.argument('key')
 @click.argument('path')
-def grep(path,key,recursive):
-    aws.search_ssms(path,key,recursive)
+def grep(path,key,recursive,value):
+    aws.search_ssms(path,key,recursive,value)
 
 
 if __name__ == '__main__':

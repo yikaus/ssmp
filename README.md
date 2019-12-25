@@ -34,3 +34,15 @@ $ ssmp grep abc /test
 Name    Type    Value  Version LastModifiedDate
 /test/abc  String  test111        1   19/12/12 21:11
 ```
+
+Search key on value of parameters
+
+```
+$ ssmp grep -rv 11 /
+Name    Type    Value  Version LastModifiedDate
+/test/abc  String  test111        1   19/12/12 21:11
+test  String  test111        1   19/12/12 21:09
+$ ssmp grep -v 11 /
+ Name    Type    Value  Version LastModifiedDate
+ test  String  test111        1   19/12/12 21:09
+```
