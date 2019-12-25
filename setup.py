@@ -9,7 +9,7 @@ with open('LICENSE') as f:
 
 setup(
     name='ssmp',
-    version='0.0.3',
+    version='0.0.4',
     description='CLI tool for AWS SSM parameter',
     long_description_content_type='text/markdown',
     long_description=readme,
