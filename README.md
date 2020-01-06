@@ -27,6 +27,17 @@ Name    Type    Value  Version LastModifiedDate
 /test/cde  String     test        1   19/12/16 20:32
 ```
 
+list recursively
+
+```
+$ ssmp ls -r /
+Name    Type    Value  Version LastModifiedDate
+/test/abc  String  test111        1   19/12/12 21:11
+/test/cde  String     test        1   19/12/16 20:32
+test  String  test111        1   19/12/12 21:09
+test2  String  test222        1   19/12/16 20:31
+```
+
 Search key under the path recursive or no recursive
 
 ```

@@ -8,4 +8,4 @@ docker:
 	docker build -t yikaus/ssmp .
 
 local:
-	pip3 install dist/ssmp-0.0.4.tar.gz
+	pip3 install dist/ssmp-0.0.5.tar.gz

@@ -2,7 +2,7 @@
 
 import click
 
-import aws
+from . import aws
 
 @click.group()
 def ssm():
