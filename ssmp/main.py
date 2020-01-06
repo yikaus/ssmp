@@ -2,16 +2,17 @@
 
 import click
 
-from . import aws
+import aws
 
 @click.group()
 def ssm():
     pass
 
 @ssm.command()
+@click.option('-r','--recursive',is_flag=True)
 @click.argument('path')
-def ls(path):
-    aws.get_ssms(path)
+def ls(path,recursive):
+    aws.get_ssms(path,recursive)
 
 @ssm.command()
 @click.option('-r','--recursive',is_flag=True)

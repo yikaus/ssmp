@@ -1,27 +1,31 @@
 import boto3
 import pandas as pd
 
-
-def get_ssms(path):
-
+def get_data(path,recursive):
     client = boto3.client('ssm')
-    data = client.get_parameters_by_path(
-            Path=path,
-            Recursive=False,
-        )
-    df=pd.DataFrame.from_dict(data['Parameters'])
+    paginator = client.get_paginator('get_parameters_by_path')
+    page_iterator = paginator.paginate(
+        Path=path,
+        Recursive=recursive,
+    )
+    Firstpage=True
+    for data in page_iterator:
+        if Firstpage:
+            df=pd.DataFrame.from_dict(data['Parameters'])
+            Firstpage=False
+        else:
+            df=df.append(data['Parameters'])
+    return df
+
+def get_ssms(path,recursive):
+    df = get_data(path,recursive)
     df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
     if df.empty == False:
         print(df[['Name','Type','Value','Version','LastModifiedDate']].to_string(index=False))
 
 def search_ssms(path,key,recursive,value):
 
-    client = boto3.client('ssm')
-    data = client.get_parameters_by_path(
-            Path=path,
-            Recursive=recursive,
-        )
-    df=pd.DataFrame.from_dict(data['Parameters'])
+    df = get_data(path,recursive)
     df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
     if value:
         result=df.loc[df['Value'].str.contains(key)]
