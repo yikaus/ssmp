@@ -1,5 +1,19 @@
 import boto3
 import pandas as pd
+import functools
+
+MAX_COLWIDTH=100
+
+def left_justified(df,quiet):
+    formatters = {}
+    for li in list(df.columns):
+        if li in ('Version',):
+            form = "{{!s:<8}}".format()
+        else:
+            max = min(df[li].str.len().max(),MAX_COLWIDTH-1)
+            form = "{{:<{}s}}".format(max)
+        formatters[li] = functools.partial(str.format, form)
+    return df.to_string(formatters=formatters, index=False, header=(not quiet))
 
 def get_data(path,recursive):
     client = boto3.client('ssm')
@@ -15,18 +29,22 @@ def get_data(path,recursive):
             Firstpage=False
         else:
             df=df.append(data['Parameters'])
+    df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
+    pd.options.display.max_colwidth=MAX_COLWIDTH
+    pd.options.display.colheader_justify='left'
     return df
 
-def get_ssms(path,recursive):
+def get_ssms(path,recursive,all,quiet):
     df = get_data(path,recursive)
-    df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
     if df.empty == False:
-        print(df[['Name','Type','Value','Version','LastModifiedDate']].to_string(index=False))
+        if all:
+            print(left_justified(df[['Name','Type','Value','Version','LastModifiedDate']],quiet))
+        else:
+            print(left_justified(df[['Name','Value']],quiet))
 
-def search_ssms(path,key,recursive,value):
+def search_ssms(path,key,recursive,value,all,quiet):
 
     df = get_data(path,recursive)
-    df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
     if value:
         result=df.loc[df['Value'].str.contains(key)]
     else:
@@ -35,4 +53,7 @@ def search_ssms(path,key,recursive,value):
     if result.empty:
         print("Not found")
     else:
-        print(result[['Name','Type','Value','Version','LastModifiedDate']].to_string(index=False))
+        if all:
+            print(left_justified(result[['Name','Type','Value','Version','LastModifiedDate']],quiet))
+        else:
+            print(left_justified(result[['Name','Value']],quiet))
