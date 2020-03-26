@@ -26,7 +26,10 @@ def get_data(path,recursive):
     for data in page_iterator:
         if Firstpage:
             df=pd.DataFrame.from_dict(data['Parameters'])
-            Firstpage=False
+            if df.empty:
+                return df
+            else:
+                Firstpage=False
         else:
             df=df.append(data['Parameters'])
     df['LastModifiedDate']=pd.to_datetime(df['LastModifiedDate']).dt.strftime("%y/%m/%d %H:%M")
@@ -45,15 +48,18 @@ def get_ssms(path,recursive,all,quiet):
 def search_ssms(path,key,recursive,value,all,quiet):
 
     df = get_data(path,recursive)
-    if value:
-        result=df.loc[df['Value'].str.contains(key)]
-    else:
-        result=df.loc[df['Name'].str.contains(key)]
-
-    if result.empty:
-        print("Not found")
-    else:
-        if all:
-            print(left_justified(result[['Name','Type','Value','Version','LastModifiedDate']],quiet))
+    if df.empty == False:
+        if value:
+            result=df.loc[df['Value'].str.contains(key)]
         else:
-            print(left_justified(result[['Name','Value']],quiet))
+            result=df.loc[df['Name'].str.contains(key)]
+
+        if result.empty:
+            print("Not found")
+        else:
+            if all:
+                print(left_justified(result[['Name','Type','Value','Version','LastModifiedDate']],quiet))
+            else:
+                print(left_justified(result[['Name','Value']],quiet))
+    else:
+        print("No parameters found")
